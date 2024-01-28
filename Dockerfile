@@ -9,7 +9,6 @@ COPY .env.production .
 COPY ./src ./src
 COPY ./swaggers ./swaggers
 COPY twitter-swagger.yaml .
-
 RUN apk add python3 
 RUN npm install pm2 -g
 RUN npm install
