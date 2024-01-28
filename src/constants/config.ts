@@ -1,11 +1,24 @@
 import { config } from 'dotenv'
-import agrv from 'minimist'
+import fs from 'fs'
+import path from 'path'
 // Kiểm tra xem đang ở môi trường nào
-const options = agrv(process.argv.slice(2))
-export const isProduction = Boolean(options.production)
+const env = process.env.NODE_ENV
+const envFilename = `.env.${env}`
+if (!env) {
+  console.log('env is not defined (example: development, production)')
+  process.exit(1)
+}
+console.log(`Detecting environment NODE_ENV=${env}, so the application will use the file ${envFilename} `)
+if (!fs.existsSync(path.resolve(envFilename))) {
+  console.log(`File ${envFilename} is not exist`)
+  console.log('Please create file .env.development or .env.production')
+  process.exit(1)
+}
+console.log('env', env)
 config({
-  path: options.env ? `.env.${options.env}` : '.env'
+  path: envFilename
 })
+export const isProduction = env === 'production'
 
 export const envConfig = {
   port: process.env.PORT || 3000,

@@ -1,0 +1,12 @@
+version: '1'
+services:
+  twitter:
+    image: stv/twitter:v0 # Sử dụng image đã build từ Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - '~WorkSpace/nodets/twitter-api/uploads:/app/uploads' # Đường dẫn đến thư mục uploads trên máy host
+
+# Chạy lệnh docker-compose up sẽ build và chạy container
+# Dừng container bằng lệnh docker-compose stop
+# docker-compose down để xóa container

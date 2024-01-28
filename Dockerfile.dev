@@ -1,0 +1,40 @@
+# Node version 21.0.0
+FROM node:21-alpine3.18 
+WORKDIR /app
+COPY package.json .
+COPY package-lock.json .
+COPY tsconfig.json .
+COPY ecosystem.config.js .
+COPY .env.development .
+COPY ./src ./src
+COPY ./swaggers ./swaggers
+COPY twitter-swagger.yaml .
+RUN apk add python3 
+RUN npm install pm2 -g
+RUN npm install
+RUN npm run build
+
+EXPOSE 3000
+# Tương ứng với lệnh pm2 start ecosystem.config.js --env production
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+
+# Show các docker images đang có trên máy dùng lệnh docker image ls
+# Show các docker container đang có trên máy dùng lệnh docker container ls
+# Show các docker container đang chạy dùng lệnh docker ls hoặc ps, nếu muốn show tất cả các container thì dùng lệnh docker ps -a
+# Xóa docker container dùng lệnh docker rm <container_id>
+# Xóa docker image dùng lệnh docker rmi <image_id>
+# Build docker image dùng lệnh docker build --progress=plain -t <image_name>:<tag> -f <path_to_dockerfile> ( docker build --progress=plain -t sitranvan/twitter:v0 -f Dockerfile.dev .)
+# Tạo và chạy container dựa trên image dùng lệnh docker container run -p <port_host>:<port_container> -d <image_name>:<tag> ( docker container run -dp 3000:3000 sitranvan/twitter:v0)
+# ...
+# Có thể chạy thông qua docker desktop hoặc 
+# docker container ls (docker ps) để lấy container_id
+# docker logs -f <container_id> để xem log của container là sẽ chạy được
+# docker exec -it <container_id> sh để vào terminal trong container
+
+# Ví dụ khi upload thì ảnh chỉ xuất hiện trong container, muốn xuất hiện ngoài host (server của chúng ta) thì phải mount volume
+# docker container run -dp 3000:3000 -v ten_duong_dan_mt_that:ten_duong_dan_mt_container sitranvan/twitter:v0
+
+# docker hub
+# docker login để login
+# docker push <image_name>:<tag> để push lên docker hub nếu tên khác với trên máy thì phải rename lại bằng lệnh docker tag <image_name>:<tag> <docker_hub_username>/<image_name>:<tag>
+# docker pull <image_name>:<tag> để pull về máy

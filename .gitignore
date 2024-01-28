@@ -2,6 +2,7 @@ node_modules/
 dist/
 .env
 .env.production
+.env.development
 uploads/
 private.txt
 aws_ses_sitranvan_accessKeys.csv
