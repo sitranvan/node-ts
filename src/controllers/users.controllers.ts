@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { ObjectId } from 'mongodb'
+import { ObjectId, W, WithId } from 'mongodb'
+import { envConfig } from '~/constants/config'
 import { UserVerifyStatus } from '~/constants/enum'
 import HTTP_STATUS from '~/constants/httpStatus'
 
@@ -42,6 +43,7 @@ export const loginController = wrapRequest(
 export const registerController = wrapRequest(
   async (req: Request<ParamsDictionary, any, RegisterRequestBody>, res: Response) => {
     const result = await usersService.register(req.body)
+
     return res.json({
       message: USERS_MESSAGES.REGISTER_SUCCESS,
       result
@@ -62,11 +64,12 @@ export const logoutController = wrapRequest(
 export const refreshTokenController = wrapRequest(
   async (req: Request<ParamsDictionary, any, RefreshTokenRequestBody>, res: Response) => {
     const { refresh_token } = req.body
-    const { user_id, verify } = req.decoded_refresh_token as TokenPayload
+    const { user_id, verify, exp } = req.decoded_refresh_token as TokenPayload
     const result = await usersService.refreshToken({
       user_id,
       refresh_token,
-      verify
+      verify,
+      exp
     })
     return res.json({
       message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS,
@@ -123,7 +126,7 @@ export const resendVerifyEmailController = wrapRequest(async (req: Request, res:
   }
 
   // Tiến hành gửi lại xác thực email
-  const result = await usersService.resendVerifyEmail(user_id)
+  const result = await usersService.resendVerifyEmail(user_id, user.email)
   return res.json(result)
 })
 
@@ -131,8 +134,8 @@ export const resendVerifyEmailController = wrapRequest(async (req: Request, res:
 export const forgotPasswordController = wrapRequest(
   async (req: Request<ParamsDictionary, any, ForgotPasswordRequestBody>, res: Response) => {
     // const { email } = req.body
-    const { _id, verify } = req.user as User
-    const result = await usersService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify })
+    const { _id, verify, email } = req.user as User
+    const result = await usersService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify, email })
     return res.json(result)
   }
 )
@@ -184,6 +187,7 @@ export const updateMeController = wrapRequest(
 export const getProfileController = wrapRequest(async (req: Request<GetProfileRequestParams>, res: Response) => {
   const { username } = req.params
   const user = await usersService.getProfile(username)
+
   return res.json({
     message: USERS_MESSAGES.GET_PROFILE_SUCCESS,
     user
@@ -222,6 +226,6 @@ export const changePasswordController = wrapRequest(
 export const oauthController = wrapRequest(async (req: Request, res: Response) => {
   const { code } = req.query
   const result = await usersService.oauth(code as string)
-  const urlRedirect = `${process.env.CLIENT_REDIRECT_CALLBACK}?access_token=${result.access_token}&refresh_token=${result.refresh_token}&new_user=${result.new_user}&verify=${result.verify}`
+  const urlRedirect = `${envConfig.clientRedirectCallback}?access_token=${result.access_token}&refresh_token=${result.refresh_token}&new_user=${result.new_user}&verify=${result.verify}`
   return res.redirect(urlRedirect)
 })

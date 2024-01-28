@@ -17,5 +17,5 @@
     "swc": true
   },
   "files": ["src/type.d.ts"], // Các file dùng để defined global type cho dự án
-  "include": ["src/**/*"] // Đường dẫn include cho các file cần build
+  "include": ["src/**/*", "private.ts"] // Đường dẫn include cho các file cần build
 }

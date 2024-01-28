@@ -36,6 +36,36 @@ import {
 import { UpdateMeRequestBody } from '~/models/requests/User.requests'
 
 const usersRouter = Router()
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     tags:
+ *       - users
+ *     summary: Đăng nhập
+ *     description: Đăng nhập vào hệ thống
+ *     operationId: login
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginBody'
+ *       description: Thông tin đăng nhập
+ *       required: true
+ *     responses:
+ *       '200':
+ *         description: Đăng nhập thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login success
+ *                 result:
+ *                   $ref: '#/components/schemas/SuccessAuthentication'
+ */
 
 usersRouter.post('/login', loginValidator, loginController)
 usersRouter.post('/register', registerValidator, registerController)

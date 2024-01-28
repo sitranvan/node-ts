@@ -12,7 +12,7 @@ interface UserType {
   email_verify_token?: string // jwt hoặc '' nếu đã xác thực email
   forgot_password_token?: string // jwt hoặc '' nếu đã xác thực email
   verify?: UserVerifyStatus
-
+  twitter_circle?: ObjectId[] // danh sách id của những người mà user này add vào max 150 người
   bio?: string // optional
   location?: string // optional
   website?: string // optional
@@ -31,7 +31,7 @@ export default class User {
   email_verify_token: string // jwt hoặc '' nếu đã xác thực email
   forgot_password_token: string // jwt hoặc '' nếu đã xác thực email
   verify: UserVerifyStatus
-
+  twitter_circle?: ObjectId[] // danh sách id của những người mà user này add vào max 150 người, vì số lượng ít chỉ tối đa 150 nên nhúng trực tiếp vào user
   bio: string // optional
   location: string // optional
   website: string // optional
@@ -51,6 +51,7 @@ export default class User {
     this.email_verify_token = user.email_verify_token || ''
     this.forgot_password_token = user.forgot_password_token || ''
     this.verify = user.verify || UserVerifyStatus.Unverified
+    this.twitter_circle = user.twitter_circle || []
     this.bio = user.bio || ''
     this.location = user.location || ''
     this.website = user.website || ''

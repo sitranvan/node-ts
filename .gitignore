@@ -1,4 +1,8 @@
 node_modules/
 dist/
 .env
+.env.production
 uploads/
+private.txt
+aws_ses_sitranvan_accessKeys.csv
+test-send-email.js
